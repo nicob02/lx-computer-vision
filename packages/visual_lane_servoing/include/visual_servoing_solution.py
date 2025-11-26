@@ -30,7 +30,7 @@ def get_steer_matrix_left_lane_markings(shape: Tuple[int, int]) -> np.ndarray:
     if max_val != 0:
         steer_unit /= max_val
 
-    steer_matrix_left_lane[:, :width] = 1 # CHANGE ME
+    steer_matrix_left_lane[:, :width] = -10.0*steer_unit # CHANGE ME
 
     return steer_matrix_left_lane
 
@@ -59,7 +59,7 @@ def get_steer_matrix_right_lane_markings(shape: Tuple[int, int]) -> np.ndarray:
     if max_val != 0:
         steer_unit /= max_val
 
-    steer_matrix_right_lane[:, width:] = 1 # CHANGE ME
+    steer_matrix_right_lane[:, width:] = steer_unit # CHANGE ME
 
     return steer_matrix_right_lane
 
@@ -73,12 +73,18 @@ def detect_lane_markings(image: np.ndarray, projector: GroundProjector) -> Tuple
         right_masked_img:  Masked image for the solid-white line (numpy.ndarray)
     """
 
-    sigma = 8  # CHANGE ME - Gaussian blur sigma
-    threshold = 10  # CHANGE ME - minimum threshold for gradiant magnitude
-    white_lower_hsv = np.array([0, 0, 0])  # CHANGE ME - color thresholds
-    white_upper_hsv = np.array([179, 255, 255])  # CHANGE ME
-    yellow_lower_hsv = np.array([0, 0, 0])  # CHANGE ME
-    yellow_upper_hsv = np.array([179, 255, 255])  # CHANGE ME
+    sigma = 5  # CHANGE ME - Gaussian blur sigma
+    threshold = 50  # CHANGE ME - minimum threshold for gradiant magnitude
+
+    # white_lower_hsv = np.array([0, 0, 180])
+    # white_upper_hsv = np.array([179, 80, 255])  # CHANGE ME
+    # yellow_lower_hsv = np.array([15, 80, 80])
+    # yellow_upper_hsv = np.array([35, 255, 255])  # CHANGE ME
+
+    white_lower_hsv = np.array([np.int32(round(179/255 * 0)), np.int32(round(2.55 * 0)), np.int32(round(2.55 * 50))])         # CHANGE ME
+    white_upper_hsv = np.array([np.int32(round(179/255 * 255)), np.int32(round(2.55 * 30)), np.int32(round(2.55 * 100))])   # CHANGE ME
+    yellow_lower_hsv = np.array([np.int32(round(179/255 * 30)), np.int32(round(2.55 * 40)), np.int32(round(2.55 * 40))])        # CHANGE ME
+    yellow_upper_hsv = np.array([np.int32(round(179/255 * 90)), np.int32(round(2.55 * 100)), np.int32(round(2.55 * 100))])  # CHANGE ME
 
     h, w, _ = image.shape
 
